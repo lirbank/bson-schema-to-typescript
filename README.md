@@ -1,3 +1,11 @@
 # bson-schema-to-typescript
 
-Compile MongoDB json schema to typescript typings
+Compile MongoDB JSON schema to TypeScript typings
+
+## Installation
+
+```sh
+yarn add -D bson-schema-to-typescript
+# or
+npm install bson-schema-to-typescript --save-dev
+```
