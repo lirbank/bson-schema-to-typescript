@@ -2,7 +2,7 @@ import fs from "fs";
 import { compileBSON } from "./compile";
 
 describe("compileBSON", () => {
-  const expected = fs.readFileSync("./expected/user-schema.ts").toString();
+  const expected = fs.readFileSync("./src/expected/user-schema.ts").toString();
 
   const schema = {
     title: "UserDoc",
