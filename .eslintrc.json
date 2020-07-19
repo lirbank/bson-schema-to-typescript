@@ -1,0 +1,30 @@
+{
+  "root": true,
+  "env": {
+    "es2020": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/no-unused-expressions": "error",
+    "eqeqeq": "error",
+    "no-buffer-constructor": "error",
+    "no-duplicate-imports": "error",
+    "object-shorthand": "error",
+    "no-unused-expressions": "error",
+    "no-return-await": "error"
+  }
+}
