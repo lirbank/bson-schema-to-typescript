@@ -104,7 +104,6 @@ function hasDecimal128(validator: JsonValue): boolean {
 }
 
 export async function compileBSON(
-  name: string,
   schema: JsonObject,
   options: Parameters<typeof compileJSON>[2]
 ) {
@@ -123,7 +122,7 @@ export async function compileBSON(
   ].join("\n");
 
   // Generate types
-  const output = await compileJSON(newSchema, name, {
+  const output = await compileJSON(newSchema, "", {
     ...options,
     bannerComment,
   });

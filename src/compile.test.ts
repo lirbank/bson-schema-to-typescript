@@ -30,6 +30,6 @@ describe("compileBSON", () => {
   };
 
   test(`compileBSON with oneOf`, async () => {
-    expect(await compileBSON("UserDoc", schema, {})).toBe(expected);
+    expect(await compileBSON(schema, {})).toBe(expected);
   });
 });
