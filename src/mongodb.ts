@@ -1,8 +1,5 @@
 import { Collection, MongoClient } from "mongodb";
-
-type JsonObject = { [key in string]: JsonValue };
-type JsonArray = JsonValue[];
-type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+import { JsonObject } from "./types";
 
 interface CollectionOptions {
   validator?: { $jsonSchema?: JsonObject };

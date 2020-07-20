@@ -3,6 +3,9 @@
   "version": "0.0.3",
   "description": "Compile MongoDB JSON schema to TypeScript typings",
   "main": "dist/index.js",
+  "bin": {
+    "json2ts": "dist/src/cli.js"
+  },
   "types": "dist/index.d.ts",
   "repository": "https://github.com/lirbank/bson-schema-to-typescript.git",
   "author": "Mikael Lirbank",
