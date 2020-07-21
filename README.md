@@ -5,20 +5,14 @@ Compile MongoDB JSON Schema to TypeScript typings
 ## Installation
 
 ```sh
+# Yarn:
 yarn add -D bson-schema-to-typescript
-# or
+
+# NPM:
 npm install bson-schema-to-typescript --save-dev
 ```
 
 ## Configuration
-
-Create a `bson2ts.json` configuration file in the root of your project
-
-```json
-{
-  "ignoreMinAndMaxItems": true
-}
-```
 
 Create a `.env` file in the root of your project, with the following environment
 variables, so `bson-schema-to-typescript` know how to connect to your MongoDB
@@ -29,12 +23,32 @@ MONGODB_URI='mongodb://localhost:27017'
 MONGODB_DB_NAME='some-db'
 ```
 
+Create a `bson2ts.json` configuration file in the root of your project
+
+```json
+{
+  "ignoreMinAndMaxItems": true
+}
+```
+
 ## CLI usage
 
-Generate typings for each MongoDB collection
+Generate typings for each MongoDB collection.
+
+Using `npx`:
 
 ```sh
 npx bson-schema-to-typescript
+```
+
+Or add a script to `package.json`:
+
+```json
+{
+  "scripts": {
+    "generate-types": "bson2ts"
+  }
+}
 ```
 
 ## Programmatic usage
