@@ -3,6 +3,7 @@
 import fs from "fs";
 import { getAllServerSchemas } from "./mongodb";
 import { compileBSON } from "./compile";
+import { JsonObject } from "./types";
 
 const configPath = "./bson2ts.json";
 const { MONGODB_URI, MONGODB_DB_NAME } = process.env;
@@ -19,6 +20,16 @@ function loadConfig() {
   };
 }
 
+function loadPrettierConfig() {
+  const filename = ".prettierrc";
+
+  if (!fs.existsSync(filename)) {
+    return undefined;
+  }
+
+  return JSON.parse(fs.readFileSync(filename).toString()) as JsonObject;
+}
+
 async function run() {
   if (!MONGODB_URI) {
     throw new Error("MONGODB_URI environment variable not defined");
@@ -28,8 +39,11 @@ async function run() {
     throw new Error("MONGODB_DB_NAME environment variable not defined");
   }
 
+  // Load prettier options
+  const prettierOptions = loadPrettierConfig();
+
   // Load configuration
-  const opts = loadConfig();
+  const opts = { ...loadConfig(), style: prettierOptions };
 
   // Get schemas for all collections from the MongoDB server
   const schemas = await getAllServerSchemas(MONGODB_URI, MONGODB_DB_NAME);
