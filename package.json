@@ -1,6 +1,6 @@
 {
   "name": "bson-schema-to-typescript",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Compile MongoDB JSON schema to TypeScript typings",
   "main": "dist/index.js",
   "bin": {
