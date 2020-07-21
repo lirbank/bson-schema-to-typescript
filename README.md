@@ -1,6 +1,23 @@
 # bson-schema-to-typescript
 
-Compile MongoDB JSON Schema to TypeScript typings
+Compile MongoDB JSON Schema to TypeScript typings. This package connects to your
+MongoDB server, retrieves any stored JSON Schema validators, and compiles them
+into TypeScript typings.
+
+For more information about MongoDB schema validation, see:
+
+[MongoDB Schema Validation](https://docs.mongodb.com/manual/core/schema-validation/#json-schema)
+
+[MongoDB \$jsonSchema operator](https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/)
+
+## Features
+
+Written in TypeScript and includes type definitions.
+
+- Can be used as CLI or programmatically
+- Works with vanilla JavaScript and
+  [TypeScript](https://www.typescriptlang.org/)
+- Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## Installation
 
@@ -61,3 +78,7 @@ import {
   getAllServerSchemas,
 } from "bson-schema-to-typescript";
 ```
+
+## Maintainers
+
+- [@lirbank](https://github.com/lirbank)
