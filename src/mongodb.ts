@@ -1,5 +1,23 @@
-import { Collection, MongoClient } from "mongodb";
+import { Collection, MongoClient, Db } from "mongodb";
 import { JsonObject } from "./types";
+
+export async function mongodb(
+  serverUri: string,
+  dbName: string
+): Promise<{
+  client: MongoClient;
+  db: Db;
+}> {
+  const client = new MongoClient(serverUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  await client.connect();
+  const db = client.db(dbName);
+
+  return { client, db };
+}
 
 interface CollectionOptions {
   validator?: { $jsonSchema?: JsonObject };
@@ -10,33 +28,35 @@ interface CollectionOptions {
 /**
  * Retrieves the stored JSON Schema from a MongoDB collection
  */
-export async function getSchema(col: Collection) {
+export async function getCollectionSchema(
+  col: Collection
+): Promise<JsonObject | undefined> {
   const options: CollectionOptions = (await col.options()) as CollectionOptions;
 
   return options.validator?.$jsonSchema;
 }
 
 /**
- * ...
+ * Retrieves a list of JSON Schemas for each collection of the MongoDB server
  */
-export async function getSchemas(
-  url: string,
-  dbName: string,
-  collectionNames: string[]
-) {
-  const client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+export async function getAllServerSchemas(
+  serverUri: string,
+  dbName: string
+): Promise<
+  {
+    collectionName: string;
+    schema: JsonObject | undefined;
+  }[]
+> {
+  const { client, db } = await mongodb(serverUri, dbName);
 
-  await client.connect();
-  const db = client.db(dbName);
+  const allCols = await db.collections();
 
   const r = await Promise.all(
-    collectionNames.map(async (colName) => {
+    allCols.map(async (col) => {
       return {
-        name: colName,
-        schema: await getSchema(db.collection(colName)),
+        collectionName: col.collectionName,
+        schema: await getCollectionSchema(col),
       };
     })
   );

@@ -129,7 +129,7 @@ export const DEFAULT_OPTIONS = {
 export async function compileBSON(
   schema: JsonObject,
   options?: Partial<typeof DEFAULT_OPTIONS>
-) {
+): Promise<string> {
   // Add 'tsType' fields as needed
   const newSchema = addTsType(schema) as JsonObject;
 
