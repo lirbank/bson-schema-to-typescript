@@ -4,12 +4,14 @@
   "description": "Compile MongoDB JSON Schema to TypeScript typings",
   "main": "dist/index.js",
   "bin": {
-    "bson2ts": "dist/cli.js"
+    "bson2ts": "dist/cli.js",
+    "bson-schema-to-typescript": "dist/cli.js"
   },
   "types": "dist/index.d.ts",
   "repository": "https://github.com/lirbank/bson-schema-to-typescript.git",
   "author": "Mikael Lirbank",
   "license": "MIT",
+  "private": false,
   "files": [
     "dist"
   ],
