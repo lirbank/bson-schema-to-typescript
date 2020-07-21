@@ -30,7 +30,7 @@ function loadPrettierConfig() {
   return JSON.parse(fs.readFileSync(filename).toString()) as JsonObject;
 }
 
-async function run() {
+async function main() {
   if (!MONGODB_URI) {
     throw new Error("MONGODB_URI environment variable not defined");
   }
@@ -69,4 +69,4 @@ async function run() {
   );
 }
 
-run().catch((error) => console.error(error));
+main().catch((error) => console.error(error));
