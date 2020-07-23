@@ -2,22 +2,20 @@
 
 import fs from "fs";
 import { getAllServerSchemas } from "./mongodb";
-import { compileBSON } from "./compile";
+import { compileBSON, Options } from "./compile";
 import { JsonObject } from "./types";
 
 const configPath = "./bson2ts.json";
 const { MONGODB_URI, MONGODB_DB_NAME } = process.env;
 
-function loadConfig() {
+function loadConfig(): Partial<Options> {
   if (!fs.existsSync(configPath)) {
-    throw new Error(`${configPath} configuration file does not exist`);
+    return {};
   }
 
   const config = fs.readFileSync(configPath).toString();
 
-  return JSON.parse(config) as {
-    bannerComment: string[];
-  };
+  return JSON.parse(config) as Partial<Options>;
 }
 
 function loadPrettierConfig() {

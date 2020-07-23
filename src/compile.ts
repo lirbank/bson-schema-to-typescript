@@ -1,8 +1,11 @@
 import {
   compile as compileJSON,
   Options as CompileJSONOptions,
+  DEFAULT_OPTIONS,
 } from "json-schema-to-typescript";
 import { JsonObject, JsonValue } from "./types";
+
+console.log(DEFAULT_OPTIONS);
 
 /**
  * JSON Schema types (type keyword)
@@ -132,7 +135,7 @@ const bannerCommentLines = [
   "*/",
 ];
 
-type Options = {
+export type Options = {
   bannerComment: string[];
 } & Pick<
   CompileJSONOptions,
