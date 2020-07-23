@@ -1,4 +1,7 @@
-import { compile as compileJSON } from "json-schema-to-typescript";
+import {
+  compile as compileJSON,
+  Options as CompileJSONOptions,
+} from "json-schema-to-typescript";
 import { JsonObject, JsonValue } from "./types";
 
 /**
@@ -35,7 +38,7 @@ import { JsonObject, JsonValue } from "./types";
  * [ ] int
  * [ ] timestamp
  * [ ] long
- * [ ] decimal
+ * [X] decimal
  * [ ] minKey
  * [ ] maxKey
  *
@@ -48,7 +51,7 @@ const bsonToTs = new Map([
   ["bool", "boolean"],
   ["date", "Date"],
   ["null", "null"],
-  // ["decimal", "Decimal128"],
+  ["decimal", "Decimal128"],
 ]);
 
 /**
@@ -74,19 +77,18 @@ function buildTsType(bsonType?: JsonValue): string | null {
 /**
  * Annotates the Schema objects with 'tsType' properties based on the 'bsonType'
  */
-function addTsType(validator: JsonValue): JsonValue {
-  if (Array.isArray(validator)) {
-    return validator.map(addTsType);
+function addTsType(schema: JsonValue): JsonValue {
+  if (Array.isArray(schema)) {
+    return schema.map(addTsType);
   }
 
-  if (typeof validator === "object" && validator !== null) {
-    const bsonType = "bsonType" in validator ? validator.bsonType : undefined;
-    const isEnum = Reflect.has(validator, "enum");
+  if (typeof schema === "object" && schema !== null) {
+    const bsonType = "bsonType" in schema ? schema.bsonType : undefined;
+    const isEnum = Reflect.has(schema, "enum");
     const tsType = buildTsType(bsonType);
 
     // Add 'tsType' fields to objects, except enums
-    const v: JsonValue =
-      !isEnum && tsType ? { ...validator, tsType } : validator;
+    const v: JsonValue = !isEnum && tsType ? { ...schema, tsType } : schema;
 
     return Object.entries(v).reduce<JsonObject>((acc, [key, value]) => {
       return {
@@ -96,22 +98,27 @@ function addTsType(validator: JsonValue): JsonValue {
     }, {});
   }
 
-  return validator;
+  return schema;
 }
 
-function hasDecimal128(validator: JsonValue): boolean {
-  if (validator === null) return false;
-
-  if (Array.isArray(validator)) {
-    return validator.some((e) => hasDecimal128(e));
+function hasDecimal128(schema: JsonValue): boolean {
+  if (schema === null || typeof schema !== "object") {
+    return false;
   }
 
-  return Object.entries(validator).some(([key, value]) => {
-    if (typeof validator === "object") {
-      return key === "tsType" && value === "Decimal128";
+  if (Array.isArray(schema)) {
+    return schema.some(hasDecimal128);
+  }
+
+  return Object.entries(schema).some(([key, value]) => {
+    if (key === "bsonType") {
+      if (value === "decimal") return true;
+      if (Array.isArray(value)) return value.includes("decimal");
     }
 
-    return hasDecimal128(value);
+    if (typeof value === "object") return hasDecimal128(value);
+
+    return false;
   });
 }
 
@@ -131,15 +138,7 @@ export const DEFAULT_OPTIONS = {
   enableConstEnums: true,
   ignoreMinAndMaxItems: false,
   strictIndexSignatures: false,
-  style: {
-    // bracketSpacing: false,
-    // printWidth: 120,
-    // semi: true,
-    // singleQuote: false,
-    // tabWidth: 2,
-    // trailingComma: "none",
-    // useTabs: false,
-  },
+  style: null,
   unreachableDefinitions: false,
   unknownAny: true,
 };
@@ -155,7 +154,7 @@ export async function compileBSON(
   const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
 
   // Import Decimal128 if the type annotations use it
-  const imports = hasDecimal128(newSchema)
+  const imports = hasDecimal128(schema)
     ? ["import { Decimal128 } from 'bson';"]
     : [];
 
@@ -165,7 +164,11 @@ export async function compileBSON(
   };
 
   // Generate types
-  const output = await compileJSON(newSchema, "", opts);
+  const output = await compileJSON(
+    newSchema,
+    "",
+    (opts as unknown) as Partial<CompileJSONOptions>
+  );
 
   return output;
 }

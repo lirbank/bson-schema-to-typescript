@@ -119,4 +119,85 @@ describe("compileBSON", () => {
 
     expect(await compileBSON(schema)).toBe(getExpected("json-types"));
   });
+
+  test(`BSON types with imports - 1`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: [],
+      properties: {
+        string: {
+          description: "String",
+          bsonType: "string",
+        },
+        number: {
+          description: "Number",
+          bsonType: "number",
+        },
+        boolean: {
+          description: "Boolean",
+          bsonType: "bool",
+        },
+        null: {
+          description: "Null",
+          bsonType: "null",
+        },
+        date: {
+          description: "Date",
+          bsonType: "date",
+        },
+        decimal: {
+          description: "Decimal",
+          bsonType: "decimal",
+        },
+      },
+    };
+
+    expect(await compileBSON(schema)).toBe(
+      getExpected("bson-types-with-imports-1")
+    );
+  });
+
+  test(`BSON types with imports - 2`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: [],
+      properties: {
+        multipleTypes1: {
+          description: "Multiple types: string",
+          type: ["string"],
+        },
+        multipleTypes2: {
+          description: "Multiple types: string, number",
+          type: ["string", "number"],
+        },
+        multipleTypes3: {
+          description: "Multiple types: string, number, boolean",
+          type: ["string", "number", "boolean"],
+        },
+        multipleTypes4: {
+          description: "Multiple types: string, number, boolean, null",
+          type: ["string", "number", "boolean", "null"],
+        },
+        multipleTypes5: {
+          description: "Multiple types: string, number, boolean, null, date",
+          bsonType: ["string", "number", "bool", "null", "date"],
+        },
+        multipleTypes6: {
+          description:
+            "Multiple types: string, number, boolean, null, date, decimal",
+          bsonType: ["string", "number", "bool", "null", "date", "decimal"],
+        },
+      },
+    };
+
+    expect(await compileBSON(schema)).toBe(
+      getExpected("bson-types-with-imports-2")
+    );
+  });
 });
