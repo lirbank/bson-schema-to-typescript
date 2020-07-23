@@ -6,6 +6,59 @@ function getExpected(filename: string): string {
 }
 
 describe("compileBSON", () => {
+  test(`JSON types`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: ["_id"],
+      properties: {
+        _id: {
+          type: "string",
+          minLength: 8,
+          maxLength: 8,
+          description: "String (min 8, max 8, alphanumeric pattern)",
+          pattern: "^[a-zA-Z0-9]*$",
+        },
+        string: {
+          description: "String",
+          type: "string",
+        },
+        number: {
+          description: "Number",
+          type: "number",
+        },
+        boolean: {
+          description: "Boolean",
+          type: "boolean",
+        },
+        null: {
+          description: "Null",
+          type: "null",
+        },
+        multipleTypes1: {
+          description: "Multiple types: string",
+          type: ["string"],
+        },
+        multipleTypes2: {
+          description: "Multiple types: string, number",
+          type: ["string", "number"],
+        },
+        multipleTypes3: {
+          description: "Multiple types: string, number, boolean",
+          type: ["string", "number", "boolean"],
+        },
+        multipleTypes4: {
+          description: "Multiple types: string, number, boolean, null",
+          type: ["string", "number", "boolean", "null"],
+        },
+      },
+    };
+
+    expect(await compileBSON(schema)).toBe(getExpected("json-types"));
+  });
+
   test(`BSON types`, async () => {
     const schema = {
       title: "UserDoc",
@@ -65,59 +118,6 @@ describe("compileBSON", () => {
     };
 
     expect(await compileBSON(schema)).toBe(getExpected("bson-types"));
-  });
-
-  test(`JSON types`, async () => {
-    const schema = {
-      title: "UserDoc",
-      description: "User object",
-      bsonType: "object",
-      additionalProperties: false,
-      required: ["_id"],
-      properties: {
-        _id: {
-          type: "string",
-          minLength: 8,
-          maxLength: 8,
-          description: "String (min 8, max 8, alphanumeric pattern)",
-          pattern: "^[a-zA-Z0-9]*$",
-        },
-        string: {
-          description: "String",
-          type: "string",
-        },
-        number: {
-          description: "Number",
-          type: "number",
-        },
-        boolean: {
-          description: "Boolean",
-          type: "boolean",
-        },
-        null: {
-          description: "Null",
-          type: "null",
-        },
-        multipleTypes1: {
-          description: "Multiple types: string",
-          type: ["string"],
-        },
-        multipleTypes2: {
-          description: "Multiple types: string, number",
-          type: ["string", "number"],
-        },
-        multipleTypes3: {
-          description: "Multiple types: string, number, boolean",
-          type: ["string", "number", "boolean"],
-        },
-        multipleTypes4: {
-          description: "Multiple types: string, number, boolean, null",
-          type: ["string", "number", "boolean", "null"],
-        },
-      },
-    };
-
-    expect(await compileBSON(schema)).toBe(getExpected("json-types"));
   });
 
   test(`BSON types with imports - 1`, async () => {
