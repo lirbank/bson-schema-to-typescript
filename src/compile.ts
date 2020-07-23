@@ -1,11 +1,8 @@
 import {
   compile as compileJSON,
   Options as CompileJSONOptions,
-  DEFAULT_OPTIONS,
 } from "json-schema-to-typescript";
 import { JsonObject, JsonValue } from "./types";
-
-console.log(DEFAULT_OPTIONS);
 
 /**
  * JSON Schema types (type keyword)
@@ -142,7 +139,6 @@ export type Options = {
   | "enableConstEnums"
   | "ignoreMinAndMaxItems"
   | "strictIndexSignatures"
-  | "style"
   | "unknownAny"
 >;
 
@@ -162,7 +158,7 @@ export async function compileBSON(
   const opts = ({
     ...options,
     bannerComment,
-    style: options?.style ? options?.style : null,
+    style: null,
   } as unknown) as CompileJSONOptions;
 
   // Generate types
