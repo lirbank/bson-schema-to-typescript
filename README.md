@@ -31,7 +31,7 @@ npm install bson-schema-to-typescript --save-dev
 
 ## Configuration
 
-### MongoDB (required)
+### MongoDB (required for CLI usage)
 
 Create a `.env` file in the root of your project, with the following environment
 variables, so `bson-schema-to-typescript` know how to connect to your MongoDB
