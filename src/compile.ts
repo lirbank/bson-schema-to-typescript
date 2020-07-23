@@ -2,7 +2,7 @@ import { compile as compileJSON } from "json-schema-to-typescript";
 import { JsonObject, JsonValue } from "./types";
 
 /**
- * Available JSON Schema types (type)
+ * JSON Schema types (type keyword)
  * https://json-schema.org/understanding-json-schema/reference/type.html
  *
  * string
@@ -12,41 +12,64 @@ import { JsonObject, JsonValue } from "./types";
  * boolean
  * null
  *
- * Supported BSON types (bsonType)
+ * BSON types (bsonType keyword)
  * https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/#available-keywords
  * https://docs.mongodb.com/manual/reference/operator/query/type/#document-type-available-types
  *
- * double
- * string
- * object
- * array
- * binData
- * undefined -- Deprecated
- * objectId
- * bool
- * date
- * null
- * regex
- * dbPointer -- Deprecated
- * javascript
- * symbol -- Deprecated
- * javascriptWithScope
- * int
- * timestamp
- * long
- * decimal
- * minKey
- * maxKey
+ * [X] number
+ * [ ] double
+ * [X] string
+ * [ ] object
+ * [ ] array
+ * [ ] binData
+ * [ ] undefined  -- Deprecated
+ * [ ] objectId
+ * [X] bool
+ * [X] date
+ * [X] null
+ * [ ] regex
+ * [ ] dbPointer  -- Deprecated
+ * [ ] javascript
+ * [ ] symbol     -- Deprecated
+ * [ ] javascriptWithScope
+ * [ ] int
+ * [ ] timestamp
+ * [ ] long
+ * [ ] decimal
+ * [ ] minKey
+ * [ ] maxKey
+ *
+ * BSON types -> TS
  */
-const bsonTypeToTsType = new Map([
-  // BSON -> TS
-  ["string", "string"],
-  ["date", "Date"],
-  ["double", "Double"],
+const bsonToTs = new Map([
   ["number", "number"],
-  ["decimal", "Decimal128"],
+  // ["double", "Double"],
+  ["string", "string"],
   ["bool", "boolean"],
+  ["date", "Date"],
+  ["null", "null"],
+  // ["decimal", "Decimal128"],
 ]);
+
+/**
+ * Generate the 'tsType' field for bson types.
+ * https://github.com/bcherny/json-schema-to-typescript#custom-schema-properties
+ */
+function buildTsType(bsonType?: JsonValue): string | null {
+  // Handle array of BSON types
+  //
+  // This is necessary since
+  // https://github.com/bcherny/json-schema-to-typescript does not support
+  // 'tsType' as an array
+  if (Array.isArray(bsonType)) {
+    return bsonType.map((e) => buildTsType(e)).join("|");
+  }
+
+  if (typeof bsonType !== "string") return null;
+
+  // Return the 'tsType' based on the BSON type
+  return bsonToTs.get(bsonType) || null;
+}
 
 /**
  * Annotates the Schema objects with 'tsType' properties based on the 'bsonType'
@@ -58,19 +81,14 @@ function addTsType(validator: JsonValue): JsonValue {
 
   if (typeof validator === "object" && validator !== null) {
     const bsonType = "bsonType" in validator ? validator.bsonType : undefined;
-
-    const tsType =
-      typeof bsonType === "string" ? bsonTypeToTsType.get(bsonType) : undefined;
-
     const isEnum = Reflect.has(validator, "enum");
+    const tsType = buildTsType(bsonType);
 
     // Add 'tsType' fields to objects, except enums
     const v: JsonValue =
-      !isEnum && typeof bsonType === "string" && typeof tsType === "string"
-        ? { ...validator, tsType }
-        : validator;
+      !isEnum && tsType ? { ...validator, tsType } : validator;
 
-    return Object.entries(v).reduce((acc, [key, value]) => {
+    return Object.entries(v).reduce<JsonObject>((acc, [key, value]) => {
       return {
         ...acc,
         [key]: addTsType(value),
