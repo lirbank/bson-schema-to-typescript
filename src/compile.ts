@@ -2,6 +2,7 @@ import {
   compile as compileJSON,
   Options as CompileJSONOptions,
 } from "json-schema-to-typescript";
+import { Options as PrettierOptions } from "prettier";
 import { JsonObject, JsonValue } from "./types";
 
 /**
@@ -134,6 +135,7 @@ const bannerCommentLines = [
 
 export type Options = {
   bannerComment: string[];
+  prettier: PrettierOptions;
 } & Pick<
   CompileJSONOptions,
   | "enableConstEnums"
@@ -158,7 +160,7 @@ export async function compileBSON(
   const opts = ({
     ...options,
     bannerComment,
-    style: null,
+    style: options?.prettier ? options.prettier : null,
   } as unknown) as CompileJSONOptions;
 
   // Generate types
