@@ -15,6 +15,10 @@ const defaultOptions = {
   strictIndexSignatures: false,
   unknownAny: true,
   path: "src/__generated__",
+  env: {
+    MONGODB_URI: "MONGODB_URI",
+    MONGODB_DATABASE: "MONGODB_DATABASE",
+  },
 };
 
 describe("Default options", () => {
@@ -109,6 +113,7 @@ describe("Default options", () => {
 });
 
 describe("Customized options with wrong type", () => {
+  // bannerComment
   test("bannerComment as boolean returns default options", () => {
     const config = JSON.stringify({ bannerComment: true });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
@@ -119,28 +124,44 @@ describe("Customized options with wrong type", () => {
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 
+  // enableConstEnums
   test("enableConstEnums as string returns default options", () => {
     const config = JSON.stringify({ enableConstEnums: "some string" });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 
+  // ignoreMinAndMaxItems
   test("ignoreMinAndMaxItems as object returns default options", () => {
     const config = JSON.stringify({ ignoreMinAndMaxItems: { x: 1 } });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 
+  // strictIndexSignatures
   test("strictIndexSignatures as null returns default options", () => {
     const config = JSON.stringify({ strictIndexSignatures: null });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 
+  // unknownAny
   test("unknownAny as array returns default options", () => {
     const config = JSON.stringify({ unknownAny: ["1"] });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 
+  // path
   test("path as number returns default options", () => {
     const config = JSON.stringify({ path: 1 });
+    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+  });
+
+  // env
+  test("env as string returns default options", () => {
+    const config = JSON.stringify({ env: "some string" });
+    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+  });
+
+  test("env as empty object returns default options", () => {
+    const config = JSON.stringify({ env: {} });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 });
@@ -191,6 +212,117 @@ describe("Customized options", () => {
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
       path: "newPath/",
+    });
+  });
+
+  test("env MONGODB_URI", () => {
+    const config = JSON.stringify({ env: { MONGODB_URI: "SOME_URI" } });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      env: {
+        MONGODB_URI: "SOME_URI",
+        MONGODB_DATABASE: "MONGODB_DATABASE",
+      },
+    });
+  });
+
+  test("env MONGODB_DATABASE", () => {
+    const config = JSON.stringify({ env: { MONGODB_DATABASE: "SOME_DB" } });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      env: {
+        MONGODB_URI: "MONGODB_URI",
+        MONGODB_DATABASE: "SOME_DB",
+      },
+    });
+  });
+
+  test("env MONGODB_URI and MONGODB_DATABASE", () => {
+    const config = JSON.stringify({
+      env: { MONGODB_URI: "SOME_URI", MONGODB_DATABASE: "SOME_DB" },
+    });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      env: {
+        MONGODB_URI: "SOME_URI",
+        MONGODB_DATABASE: "SOME_DB",
+      },
+    });
+  });
+});
+
+describe("Omit excess options", () => {
+  test("unknown option is skipped", () => {
+    const config = JSON.stringify({ unknownOption: false });
+    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+  });
+
+  test("unknown option is skipped and valid option is in effect", () => {
+    const config = JSON.stringify({
+      enableConstEnums: false,
+      unknownOption: false,
+    });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      enableConstEnums: false,
+    });
+  });
+
+  test("unknown option is skipped, invalid option is skipped, and valid option is in effect", () => {
+    const config = JSON.stringify({
+      enableConstEnums: false,
+      unknownOption: false,
+      ignoreMinAndMaxItems: "xxx",
+    });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      enableConstEnums: false,
+    });
+  });
+
+  test("unknown envs are skipped", () => {
+    const config = JSON.stringify({
+      env: {
+        unknown1: 1,
+        unknown2: "1",
+      },
+    });
+    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+  });
+
+  test("unknown envs are skipped and valid envs are in effect", () => {
+    const config = JSON.stringify({
+      env: {
+        MONGODB_URI: "SOME_URI",
+        MONGODB_DATABASE: "SOME_DB",
+        unknown1: 1,
+        unknown2: "1",
+      },
+    });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      env: {
+        MONGODB_URI: "SOME_URI",
+        MONGODB_DATABASE: "SOME_DB",
+      },
+    });
+  });
+
+  test("unknown envs are skipped, invalid env is skipped, and valid envs are in effect", () => {
+    const config = JSON.stringify({
+      env: {
+        MONGODB_URI: "SOME_URI",
+        MONGODB_DATABASE: 1,
+        unknown1: 1,
+        unknown2: "1",
+      },
+    });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      env: {
+        MONGODB_URI: "SOME_URI",
+        MONGODB_DATABASE: "MONGODB_DATABASE",
+      },
     });
   });
 });

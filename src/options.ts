@@ -10,6 +10,10 @@ export type Options = {
   strictIndexSignatures: CompileJSONOptions["strictIndexSignatures"];
   unknownAny: CompileJSONOptions["unknownAny"];
   path: string;
+  env: {
+    MONGODB_URI: string;
+    MONGODB_DATABASE: string;
+  };
   prettier?: PrettierOptions;
 };
 
@@ -28,6 +32,10 @@ const defaultOptions: Options = {
   strictIndexSignatures: false,
   unknownAny: true,
   path: "src/__generated__",
+  env: {
+    MONGODB_URI: "MONGODB_URI",
+    MONGODB_DATABASE: "MONGODB_DATABASE",
+  },
 };
 
 function readConfig() {
@@ -90,6 +98,22 @@ export function parseConfig(config: string): Options {
     const path =
       typeof options.path === "string" ? options.path : defaultOptions.path;
 
+    const env =
+      typeof options.env === "object" &&
+      options.env !== null &&
+      !Array.isArray(options.env)
+        ? {
+            MONGODB_URI:
+              typeof options.env.MONGODB_URI === "string"
+                ? options.env.MONGODB_URI
+                : defaultOptions.env.MONGODB_URI,
+            MONGODB_DATABASE:
+              typeof options.env.MONGODB_DATABASE === "string"
+                ? options.env.MONGODB_DATABASE
+                : defaultOptions.env.MONGODB_DATABASE,
+          }
+        : defaultOptions.env;
+
     return {
       bannerComment,
       enableConstEnums,
@@ -97,6 +121,7 @@ export function parseConfig(config: string): Options {
       strictIndexSignatures,
       unknownAny,
       path,
+      env,
     };
   } catch (error) {
     return defaultOptions;

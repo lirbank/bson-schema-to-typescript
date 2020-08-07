@@ -31,21 +31,13 @@ npm install bson-schema-to-typescript --save-dev
 
 ## Configuration
 
-### MongoDB (required for CLI usage)
-
-Create a `.env` file in the root of your project, with the following environment
-variables, so `bson-schema-to-typescript` know how to connect to your MongoDB
-server.
-
-```
-MONGODB_URI='mongodb://localhost:27017'
-MONGODB_DB_NAME='some-db'
-```
-
-### Parser (optional)
+### Parser configuration (optional)
 
 Create a `bson2ts.json` configuration file in the root of your project. The
 following values are the current defaults.
+
+The `env` section enables mapping of your MongoDB environment variables, see the
+next section below.
 
 ```json
 {
@@ -62,7 +54,35 @@ following values are the current defaults.
   "ignoreMinAndMaxItems": false,
   "strictIndexSignatures": false,
   "unknownAny": true,
-  "path": "src/__generated__"
+  "path": "src/__generated__",
+  "env": {
+    "MONGODB_URI": "MONGODB_URI",
+    "MONGODB_DATABASE": "MONGODB_DATABASE"
+  }
+}
+```
+
+### MongoDB configuration (required for CLI usage)
+
+The CLI connects to your MongoDB instance using two environment variables, the
+MongoDB connection string (ex. `mongodb://localhost:27017`), and the MongoDB
+database name (ex. `my-app`).
+
+The CLI will by default use `MONGODB_URI` and `MONGODB_DATABASE` respectively,
+if no configuration is provided.
+
+If you already have these environment variables configured under different
+names, you can make the CLI aware of that by providing the `env` section of the
+`bson2ts.json` configuration file.
+
+For example
+
+```json
+{
+  "env": {
+    "MONGODB_URI": "MY_MONGODB_URL",
+    "MONGODB_DATABASE": "MY_MONGODB_DB"
+  }
 }
 ```
 

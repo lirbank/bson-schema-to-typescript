@@ -6,24 +6,25 @@ import { getAllServerSchemas } from "./mongodb";
 import { compileBSON } from "./compile";
 import { loadConfig } from "./options";
 
-const { MONGODB_URI, MONGODB_DB_NAME } = process.env;
+function getEnv(name: string) {
+  const env = process.env[name];
+
+  if (!env) {
+    throw new Error(`${name} environment variable not defined`);
+  }
+
+  return env;
+}
 
 async function main() {
-  if (!MONGODB_URI) {
-    throw new Error("MONGODB_URI environment variable not defined");
-  }
-
-  if (!MONGODB_DB_NAME) {
-    throw new Error("MONGODB_DB_NAME environment variable not defined");
-  }
-
   // Load configuration
   const opts = loadConfig();
 
-  console.log(JSON.stringify(opts, null, 2));
-
   // Get schemas for all collections from the MongoDB server
-  const schemas = await getAllServerSchemas(MONGODB_URI, MONGODB_DB_NAME);
+  const schemas = await getAllServerSchemas(
+    getEnv(opts.env.MONGODB_URI),
+    getEnv(opts.env.MONGODB_DATABASE)
+  );
 
   console.log("Generating typescript types for MongoDB collection schemas");
 
