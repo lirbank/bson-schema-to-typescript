@@ -61,7 +61,8 @@ following values are the current defaults.
   "enableConstEnums": true,
   "ignoreMinAndMaxItems": false,
   "strictIndexSignatures": false,
-  "unknownAny": true
+  "unknownAny": true,
+  "path": "src/__generated__"
 }
 ```
 

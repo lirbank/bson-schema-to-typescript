@@ -1,32 +1,12 @@
 #!/usr/bin/env node --require dotenv/config
 
 import fs from "fs";
+import path from "path";
 import { getAllServerSchemas } from "./mongodb";
-import { compileBSON, Options } from "./compile";
-import { Options as PrettierOptions } from "prettier";
+import { compileBSON } from "./compile";
+import { loadConfig } from "./options";
 
-const configPath = "./bson2ts.json";
 const { MONGODB_URI, MONGODB_DB_NAME } = process.env;
-
-function loadConfig(): Partial<Options> {
-  if (!fs.existsSync(configPath)) {
-    return {};
-  }
-
-  const config = fs.readFileSync(configPath).toString();
-
-  return JSON.parse(config) as Partial<Options>;
-}
-
-function loadPrettierConfig() {
-  const filename = ".prettierrc";
-
-  if (!fs.existsSync(filename)) {
-    return undefined;
-  }
-
-  return JSON.parse(fs.readFileSync(filename).toString()) as PrettierOptions;
-}
 
 async function main() {
   if (!MONGODB_URI) {
@@ -38,10 +18,9 @@ async function main() {
   }
 
   // Load configuration
-  const opts: Parameters<typeof compileBSON>[1] = {
-    ...loadConfig(),
-    prettier: loadPrettierConfig(),
-  };
+  const opts = loadConfig();
+
+  console.log(JSON.stringify(opts, null, 2));
 
   // Get schemas for all collections from the MongoDB server
   const schemas = await getAllServerSchemas(MONGODB_URI, MONGODB_DB_NAME);
@@ -61,8 +40,13 @@ async function main() {
 
       if (!filename) throw new Error("A schema title is required");
 
-      // Store types
-      fs.writeFileSync(`./src/__generated__/${filename}.ts`, output);
+      if (!fs.existsSync(opts.path)) {
+        fs.mkdirSync(opts.path, { recursive: true });
+      }
+
+      const p = path.join(opts.path, filename) + ".ts";
+
+      fs.writeFileSync(p, output);
     })
   );
 }

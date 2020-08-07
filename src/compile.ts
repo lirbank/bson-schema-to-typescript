@@ -2,8 +2,8 @@ import {
   compile as compileJSON,
   Options as CompileJSONOptions,
 } from "json-schema-to-typescript";
-import { Options as PrettierOptions } from "prettier";
 import { JsonObject, JsonValue } from "./types";
+import { Options } from "./options";
 
 /**
  * JSON Schema types (type keyword)
@@ -132,17 +132,6 @@ const bannerCommentLines = [
   "* and run bson-schema-to-typescript to regenerate this file.",
   "*/",
 ];
-
-export type Options = {
-  bannerComment: string[];
-  prettier: PrettierOptions;
-} & Pick<
-  CompileJSONOptions,
-  | "enableConstEnums"
-  | "ignoreMinAndMaxItems"
-  | "strictIndexSignatures"
-  | "unknownAny"
->;
 
 export async function compileBSON(
   schema: JsonObject,
