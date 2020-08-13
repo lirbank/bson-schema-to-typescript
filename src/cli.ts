@@ -4,8 +4,7 @@ import fs from "fs";
 import path from "path";
 import { getAllServerSchemas } from "./mongodb";
 import { compileBSON } from "./compile";
-import { loadConfig } from "./options";
-import prettier from "prettier";
+import { loadConfig, prettierOptions } from "./options";
 
 function getEnv(name: string): string {
   const env = process.env[name];
@@ -17,17 +16,8 @@ function getEnv(name: string): string {
   return env;
 }
 
-async function format(path: string, text: string): Promise<string> {
-  const options = await prettier.resolveConfig(path);
-
-  return prettier.format(text, {
-    ...options,
-    parser: "typescript",
-  });
-}
-
 async function main(): Promise<void> {
-  // Load configuration
+  // Load configuration file
   const opts = loadConfig();
 
   // Get schemas for all collections from the MongoDB server
@@ -45,10 +35,7 @@ async function main(): Promise<void> {
       // Do nothing when a collection has no schema
       if (!schema) return;
 
-      const output = await compileBSON(schema, opts);
-
-      const filename = typeof schema.title === "string" ? schema.title : "";
-
+      const filename = typeof schema.title === "string" ? schema.title : null;
       if (!filename) throw new Error("A schema title is required");
 
       if (!fs.existsSync(opts.path)) {
@@ -56,9 +43,13 @@ async function main(): Promise<void> {
       }
 
       const destination = path.join(opts.path, filename) + ".ts";
-      const formatted = await format(destination, output);
 
-      fs.writeFileSync(destination, formatted);
+      const output = await compileBSON(schema, {
+        ...opts,
+        prettier: await prettierOptions(destination),
+      });
+
+      fs.writeFileSync(destination, output);
     })
   );
 }

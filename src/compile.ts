@@ -2,8 +2,13 @@ import {
   compile as compileJSON,
   Options as CompileJSONOptions,
 } from "json-schema-to-typescript";
+import prettier from "prettier";
 import { JsonObject, JsonValue } from "./types";
 import { Options } from "./options";
+
+function format(text: string, options?: prettier.Options): string {
+  return prettier.format(text, { ...options, parser: "typescript" });
+}
 
 /**
  * JSON Schema types (type keyword)
@@ -133,9 +138,18 @@ const bannerCommentLines = [
   "*/",
 ];
 
+type compileOptions = Pick<
+  Options,
+  | "bannerComment"
+  | "enableConstEnums"
+  | "ignoreMinAndMaxItems"
+  | "strictIndexSignatures"
+  | "unknownAny"
+> & { prettier: prettier.Options };
+
 export async function compileBSON(
   schema: JsonObject,
-  options?: Partial<Options>
+  options?: Partial<compileOptions>
 ): Promise<string> {
   // Add 'tsType' fields as needed
   const newSchema = addTsType(schema) as JsonObject;
@@ -157,5 +171,5 @@ export async function compileBSON(
   // Generate types
   const output = await compileJSON(newSchema, "", compileJSONOptions);
 
-  return output;
+  return format(output, options?.prettier);
 }

@@ -1,6 +1,16 @@
 import fs from "fs";
 import { Options as CompileJSONOptions } from "json-schema-to-typescript";
+import prettier from "prettier";
 import { JsonValue } from "./types";
+
+export async function prettierOptions(path: string): Promise<prettier.Options> {
+  const options = await prettier.resolveConfig(path);
+
+  return {
+    ...options,
+    parser: "typescript",
+  };
+}
 
 export type Options = {
   bannerComment: string[];
