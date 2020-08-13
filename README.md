@@ -107,6 +107,25 @@ Or add a script to `package.json`:
     "generate-types": "bson2ts"
   }
 }
+
+Then run `yarn generate-types` or `npm run generate-types`
+```
+
+## Usage of generated typings
+
+Once you have generated the types, you can implement them like this:
+
+```ts
+import { Db } from "mongodb";
+import { UserDoc } from "./__generated__/UserDoc";
+import { PostDoc } from "./__generated__/PostDoc";
+
+export async function collections(db: Db) {
+  return {
+    users: db.collection<UserDoc>("users"),
+    posts: db.collection<PostDoc>("posts"),
+  };
+}
 ```
 
 ## Programmatic usage

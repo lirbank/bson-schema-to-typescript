@@ -201,3 +201,45 @@ describe("compileBSON", () => {
     );
   });
 });
+
+describe("compileBSON with banner comments", () => {
+  test(`custom banner comment`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: ["_id"],
+      properties: {
+        string: {
+          description: "String",
+          bsonType: "string",
+        },
+      },
+    };
+
+    expect(
+      await compileBSON(schema, { bannerComment: ["/* Custom banner */"] })
+    ).toBe(getExpected("bson-types-with-banner"));
+  });
+
+  test(`custom banner comment and imports`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: ["_id"],
+      properties: {
+        decimal: {
+          description: "Decimal",
+          bsonType: "decimal",
+        },
+      },
+    };
+
+    expect(
+      await compileBSON(schema, { bannerComment: ["/* Custom banner */"] })
+    ).toBe(getExpected("bson-types-with-imports-and-banner"));
+  });
+});

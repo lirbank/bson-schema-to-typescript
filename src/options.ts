@@ -25,7 +25,7 @@ export type Options = {
   };
 };
 
-const defaultOptions: Options = {
+export const defaultOptions: Options = {
   bannerComment: [
     "/* eslint-disable */",
     "/* tslint:disable */",
