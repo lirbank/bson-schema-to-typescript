@@ -5,8 +5,9 @@ import path from "path";
 import { getAllServerSchemas } from "./mongodb";
 import { compileBSON } from "./compile";
 import { loadConfig } from "./options";
+import prettier from "prettier";
 
-function getEnv(name: string) {
+function getEnv(name: string): string {
   const env = process.env[name];
 
   if (!env) {
@@ -16,7 +17,16 @@ function getEnv(name: string) {
   return env;
 }
 
-async function main() {
+async function format(path: string, text: string): Promise<string> {
+  const options = await prettier.resolveConfig(path);
+
+  return prettier.format(text, {
+    ...options,
+    parser: "typescript",
+  });
+}
+
+async function main(): Promise<void> {
   // Load configuration
   const opts = loadConfig();
 
@@ -45,11 +55,12 @@ async function main() {
         fs.mkdirSync(opts.path, { recursive: true });
       }
 
-      const p = path.join(opts.path, filename) + ".ts";
+      const destination = path.join(opts.path, filename) + ".ts";
+      const formatted = await format(destination, output);
 
-      fs.writeFileSync(p, output);
+      fs.writeFileSync(destination, formatted);
     })
   );
 }
 
-main().catch((error) => console.error(error));
+main().catch(console.error);

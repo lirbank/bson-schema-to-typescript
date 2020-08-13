@@ -1,7 +1,4 @@
-import {
-  compile as compileJSON,
-  Options as CompileJSONOptions,
-} from "json-schema-to-typescript";
+import { compile as compileJSON } from "json-schema-to-typescript";
 import { JsonObject, JsonValue } from "./types";
 import { Options } from "./options";
 
@@ -146,11 +143,7 @@ export async function compileBSON(
     : bannerCommentLines
   ).join("\n");
 
-  const opts = ({
-    ...options,
-    bannerComment,
-    style: options?.prettier ? options.prettier : null,
-  } as unknown) as CompileJSONOptions;
+  const opts = { ...options, bannerComment };
 
   // Generate types
   const output = await compileJSON(newSchema, "", opts);

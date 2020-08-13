@@ -6,9 +6,10 @@ into TypeScript typings.
 
 For more information about MongoDB schema validation, see:
 
-[MongoDB Schema Validation](https://docs.mongodb.com/manual/core/schema-validation/#json-schema)
-
-[MongoDB \$jsonSchema operator](https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/)
+[MongoDB Schema
+Validation](https://docs.mongodb.com/manual/core/schema-validation/#json-schema)
+and [MongoDB \$jsonSchema
+operator](https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/)
 
 ## Features
 
@@ -18,6 +19,8 @@ Written in TypeScript and includes type definitions.
 - Works with vanilla JavaScript and
   [TypeScript](https://www.typescriptlang.org/)
 - Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+- CLI output is formatted with [Prettier](https://prettier.io/), adhering to
+  project [format options](https://prettier.io/docs/en/configuration.html)
 
 ## Installation
 

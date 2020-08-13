@@ -1,6 +1,5 @@
 import fs from "fs";
 import { Options as CompileJSONOptions } from "json-schema-to-typescript";
-import { Options as PrettierOptions } from "prettier";
 import { JsonValue } from "./types";
 
 export type Options = {
@@ -14,7 +13,6 @@ export type Options = {
     MONGODB_URI: string;
     MONGODB_DATABASE: string;
   };
-  prettier?: PrettierOptions;
 };
 
 const defaultOptions: Options = {
@@ -44,18 +42,6 @@ function readConfig() {
   return fs.existsSync(configPath)
     ? fs.readFileSync(configPath).toString()
     : JSON.stringify({});
-}
-
-function readPrettierConfig() {
-  const configPath = ".prettierrc";
-
-  if (!fs.existsSync(configPath)) {
-    return undefined;
-  }
-
-  const config = fs.readFileSync(configPath).toString();
-
-  return JSON.parse(config) as PrettierOptions;
 }
 
 export function parseConfig(config: string): Options {
@@ -131,8 +117,5 @@ export function parseConfig(config: string): Options {
 export function loadConfig(): Options {
   const config = readConfig();
 
-  return {
-    ...parseConfig(config),
-    prettier: readPrettierConfig(),
-  };
+  return parseConfig(config);
 }
