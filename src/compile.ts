@@ -1,4 +1,7 @@
-import { compile as compileJSON } from "json-schema-to-typescript";
+import {
+  compile as compileJSON,
+  Options as CompileJSONOptions,
+} from "json-schema-to-typescript";
 import { JsonObject, JsonValue } from "./types";
 import { Options } from "./options";
 
@@ -143,10 +146,16 @@ export async function compileBSON(
     : bannerCommentLines
   ).join("\n");
 
-  const opts = { ...options, bannerComment };
+  const compileJSONOptions: Partial<CompileJSONOptions> = {
+    bannerComment,
+    enableConstEnums: options?.enableConstEnums,
+    ignoreMinAndMaxItems: options?.ignoreMinAndMaxItems,
+    strictIndexSignatures: options?.strictIndexSignatures,
+    unknownAny: options?.unknownAny,
+  };
 
   // Generate types
-  const output = await compileJSON(newSchema, "", opts);
+  const output = await compileJSON(newSchema, "", compileJSONOptions);
 
   return output;
 }
