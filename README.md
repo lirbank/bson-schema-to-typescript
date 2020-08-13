@@ -120,7 +120,7 @@ import { Db } from "mongodb";
 import { UserDoc } from "./__generated__/UserDoc";
 import { PostDoc } from "./__generated__/PostDoc";
 
-export async function collections(db: Db) {
+export function collections(db: Db) {
   return {
     users: db.collection<UserDoc>("users"),
     posts: db.collection<PostDoc>("posts"),
