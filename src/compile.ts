@@ -81,11 +81,12 @@ function buildTsType(bsonType?: JsonValue): string | null {
 }
 
 /**
- * Annotates the Schema objects with 'tsType' properties based on the 'bsonType'
+ * Recursively annotates the schema with "tsType" properties based on the
+ * "bsonType" field
  */
-function addTsType(schema: JsonValue): JsonValue {
+function setTsType(schema: JsonValue): JsonValue {
   if (Array.isArray(schema)) {
-    return schema.map(addTsType);
+    return schema.map(setTsType);
   }
 
   if (typeof schema === "object" && schema !== null) {
@@ -99,7 +100,7 @@ function addTsType(schema: JsonValue): JsonValue {
     return Object.entries(v).reduce<JsonObject>((acc, [key, value]) => {
       return {
         ...acc,
-        [key]: addTsType(value),
+        [key]: setTsType(value),
       };
     }, {});
   }
@@ -144,16 +145,12 @@ export async function compileBSON(
   schema: JsonObject,
   options?: Partial<compileOptions>
 ): Promise<string> {
-  // Add 'tsType' fields as needed
-  const newSchema = addTsType(schema) as JsonObject;
+  const baseBanner = options?.bannerComment || defaultOptions.bannerComment;
 
   // Import Decimal128 if the type annotations use it
   const bannerComment = (hasDecimal128(schema)
-    ? [
-        ...(options?.bannerComment || defaultOptions.bannerComment),
-        "import { Decimal128 } from 'bson';",
-      ]
-    : options?.bannerComment || defaultOptions.bannerComment
+    ? [...baseBanner, `import { Decimal128 } from "bson";`]
+    : baseBanner
   ).join("\n");
 
   const compileJSONOptions: Partial<CompileJSONOptions> = {
@@ -163,6 +160,9 @@ export async function compileBSON(
     strictIndexSignatures: options?.strictIndexSignatures,
     unknownAny: options?.unknownAny,
   };
+
+  // Add "tsType" fields as needed
+  const newSchema = setTsType(schema) as JsonObject;
 
   // Generate types
   const output = await compileJSON(newSchema, "", compileJSONOptions);
