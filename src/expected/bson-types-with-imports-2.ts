@@ -5,7 +5,7 @@
  * Do not modify it by hand. Instead, modify the MongoDB $jsonSchema validator,
  * and run bson2ts to regenerate this file.
  */
-import { Decimal128 } from "bson";
+import { Decimal128 } from "mongodb";
 
 /**
  * User object

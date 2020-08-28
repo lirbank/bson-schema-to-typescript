@@ -149,7 +149,7 @@ export async function compileBSON(
 
   // Import Decimal128 if the type annotations use it
   const bannerComment = (hasDecimal128(schema)
-    ? [...baseBanner, `import { Decimal128 } from "bson";`]
+    ? [...baseBanner, `import { Decimal128 } from "mongodb";`]
     : baseBanner
   ).join("\n");
 
