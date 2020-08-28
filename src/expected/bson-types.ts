@@ -23,6 +23,10 @@ export interface UserDoc {
    */
   number?: number;
   /**
+   * Integer
+   */
+  int?: number;
+  /**
    * Boolean
    */
   boolean?: boolean;

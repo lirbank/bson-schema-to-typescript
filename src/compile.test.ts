@@ -82,6 +82,10 @@ describe("compileBSON", () => {
           description: "Number",
           bsonType: "number",
         },
+        int: {
+          description: "Integer",
+          bsonType: "int",
+        },
         boolean: {
           description: "Boolean",
           bsonType: "bool",

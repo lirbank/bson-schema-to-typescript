@@ -11,7 +11,7 @@ function format(text: string, options?: prettier.Options): string {
 }
 
 /**
- * JSON Schema types (type keyword)
+ * JSON Schema types ("type" keyword)
  * https://json-schema.org/understanding-json-schema/reference/type.html
  *
  * string
@@ -21,7 +21,7 @@ function format(text: string, options?: prettier.Options): string {
  * boolean
  * null
  *
- * BSON types (bsonType keyword)
+ * BSON types ("bsonType" keyword)
  * https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/#available-keywords
  * https://docs.mongodb.com/manual/reference/operator/query/type/#document-type-available-types
  *
@@ -41,7 +41,7 @@ function format(text: string, options?: prettier.Options): string {
  * [ ] javascript
  * [ ] symbol     -- Deprecated
  * [ ] javascriptWithScope
- * [ ] int
+ * [X] int
  * [ ] timestamp
  * [ ] long
  * [X] decimal
@@ -52,11 +52,11 @@ function format(text: string, options?: prettier.Options): string {
  */
 const bsonToTs = new Map([
   ["number", "number"],
-  // ["double", "Double"],
   ["string", "string"],
   ["bool", "boolean"],
   ["date", "Date"],
   ["null", "null"],
+  ["int", "number"],
   ["decimal", "Decimal128"],
 ]);
 
@@ -107,6 +107,9 @@ function addTsType(schema: JsonValue): JsonValue {
   return schema;
 }
 
+/**
+ * Recursively checks if a schema relies on the Decimal128 BSON type anywhere
+ */
 function hasDecimal128(schema: JsonValue): boolean {
   if (schema === null || typeof schema !== "object") {
     return false;
