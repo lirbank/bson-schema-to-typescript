@@ -98,7 +98,9 @@ export function parseConfig(config: string): Options {
         : defaultOptions.database;
 
     const uri =
-      typeof options.uri === "string" ? options.uri : defaultOptions.uri;
+      typeof options.uri === "string"
+        ? expandEnv(options.uri)
+        : defaultOptions.uri;
 
     return {
       database,

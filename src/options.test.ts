@@ -92,6 +92,12 @@ describe("Default options", () => {
 });
 
 describe("Modified options with wrong type", () => {
+  // out
+  test("out as number returns default options", () => {
+    const config = JSON.stringify({ out: 1 });
+    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+  });
+
   // bannerComment
   test("bannerComment as boolean returns default options", () => {
     const config = JSON.stringify({ bannerComment: true });
@@ -126,63 +132,10 @@ describe("Modified options with wrong type", () => {
     const config = JSON.stringify({ unknownAny: ["1"] });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
-
-  // out
-  test("out as number returns default options", () => {
-    const config = JSON.stringify({ out: 1 });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
 });
 
 describe("Modified options", () => {
-  test("bannerComment", () => {
-    const config = JSON.stringify({ bannerComment: ["some banner"] });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      bannerComment: ["some banner"],
-    });
-  });
-
-  test("enableConstEnums", () => {
-    const config = JSON.stringify({ enableConstEnums: false });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      enableConstEnums: false,
-    });
-  });
-
-  test("ignoreMinAndMaxItems", () => {
-    const config = JSON.stringify({ ignoreMinAndMaxItems: true });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      ignoreMinAndMaxItems: true,
-    });
-  });
-
-  test("strictIndexSignatures", () => {
-    const config = JSON.stringify({ strictIndexSignatures: true });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      strictIndexSignatures: true,
-    });
-  });
-
-  test("unknownAny", () => {
-    const config = JSON.stringify({ unknownAny: false });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      unknownAny: false,
-    });
-  });
-
-  test("out", () => {
-    const config = JSON.stringify({ out: "newPath/" });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      out: "newPath/",
-    });
-  });
-
+  // uri
   test("uri - string", () => {
     const config = JSON.stringify({ uri: "connection-string" });
     expect(parseConfig(config)).toStrictEqual({
@@ -193,16 +146,17 @@ describe("Modified options", () => {
 
   test("uri - environment variable", () => {
     process.env.MONGO_URI = "connection-string";
-    const config = JSON.stringify({ database: "$MONGO_URI" });
+    const config = JSON.stringify({ uri: "$MONGO_URI" });
 
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
-      database: "connection-string",
+      uri: "connection-string",
     });
 
     delete process.env.MONGO_URI;
   });
 
+  // database
   test("database - string", () => {
     const config = JSON.stringify({ database: "db-string" });
     expect(parseConfig(config)).toStrictEqual({
@@ -221,6 +175,60 @@ describe("Modified options", () => {
     });
 
     delete process.env.MONGO_DB;
+  });
+
+  // out
+  test("out", () => {
+    const config = JSON.stringify({ out: "newPath/" });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      out: "newPath/",
+    });
+  });
+
+  // bannerComment
+  test("bannerComment", () => {
+    const config = JSON.stringify({ bannerComment: ["some banner"] });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      bannerComment: ["some banner"],
+    });
+  });
+
+  // enableConstEnums
+  test("enableConstEnums", () => {
+    const config = JSON.stringify({ enableConstEnums: false });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      enableConstEnums: false,
+    });
+  });
+
+  // ignoreMinAndMaxItems
+  test("ignoreMinAndMaxItems", () => {
+    const config = JSON.stringify({ ignoreMinAndMaxItems: true });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      ignoreMinAndMaxItems: true,
+    });
+  });
+
+  // strictIndexSignatures
+  test("strictIndexSignatures", () => {
+    const config = JSON.stringify({ strictIndexSignatures: true });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      strictIndexSignatures: true,
+    });
+  });
+
+  // unknownAny
+  test("unknownAny", () => {
+    const config = JSON.stringify({ unknownAny: false });
+    expect(parseConfig(config)).toStrictEqual({
+      ...defaultOptions,
+      unknownAny: false,
+    });
   });
 });
 
