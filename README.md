@@ -65,9 +65,9 @@ The default configuration is:
 
 ## Connecting to MongoDB
 
-The CLI connects to the MongoDB server using the connection string provided by
-the `mongodbUri` configuration option, and the database name provided by the
-`mongodbDatabase` configuration option.
+The `bson2ts` CLI connects to the MongoDB server using the connection string
+provided by the `mongodbUri` configuration option, and the database name
+provided by the `mongodbDatabase` configuration option.
 
 ## Environment variables
 
