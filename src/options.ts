@@ -64,6 +64,19 @@ export function parseConfig(config: string): Options {
       throw new Error("config must be a plain object");
     }
 
+    const uri =
+      typeof options.uri === "string"
+        ? expandEnv(options.uri)
+        : defaultOptions.uri;
+
+    const database =
+      typeof options.database === "string"
+        ? expandEnv(options.database)
+        : defaultOptions.database;
+
+    const out =
+      typeof options.out === "string" ? options.out : defaultOptions.out;
+
     const bannerComment = (Array.isArray(options.bannerComment) &&
     options.bannerComment.every((e) => typeof e === "string")
       ? options.bannerComment
@@ -89,22 +102,9 @@ export function parseConfig(config: string): Options {
         ? options.unknownAny
         : defaultOptions.unknownAny;
 
-    const out =
-      typeof options.out === "string" ? options.out : defaultOptions.out;
-
-    const database =
-      typeof options.database === "string"
-        ? expandEnv(options.database)
-        : defaultOptions.database;
-
-    const uri =
-      typeof options.uri === "string"
-        ? expandEnv(options.uri)
-        : defaultOptions.uri;
-
     return {
-      database,
       uri,
+      database,
       out,
       bannerComment,
       enableConstEnums,
