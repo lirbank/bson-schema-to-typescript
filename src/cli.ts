@@ -11,10 +11,7 @@ async function main(): Promise<void> {
   const opts = loadConfig();
 
   // Get schemas for all collections from the MongoDB server
-  const schemas = await getDatabaseSchemas(
-    opts.mongodbUri,
-    opts.mongodbDatabase
-  );
+  const schemas = await getDatabaseSchemas(opts.uri, opts.database);
 
   console.log("Generating typescript types for MongoDB collection schemas");
 

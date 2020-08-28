@@ -183,41 +183,41 @@ describe("Modified options", () => {
     });
   });
 
-  test("mongodbUri - string", () => {
-    const config = JSON.stringify({ mongodbUri: "connection-string" });
+  test("uri - string", () => {
+    const config = JSON.stringify({ uri: "connection-string" });
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
-      mongodbUri: "connection-string",
+      uri: "connection-string",
     });
   });
 
-  test("mongodbUri - environment variable", () => {
+  test("uri - environment variable", () => {
     process.env.MONGO_URI = "connection-string";
-    const config = JSON.stringify({ mongodbDatabase: "$MONGO_URI" });
+    const config = JSON.stringify({ database: "$MONGO_URI" });
 
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
-      mongodbDatabase: "connection-string",
+      database: "connection-string",
     });
 
     delete process.env.MONGO_URI;
   });
 
-  test("mongodbDatabase - string", () => {
-    const config = JSON.stringify({ mongodbDatabase: "db-string" });
+  test("database - string", () => {
+    const config = JSON.stringify({ database: "db-string" });
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
-      mongodbDatabase: "db-string",
+      database: "db-string",
     });
   });
 
-  test("mongodbDatabase - environment variable", () => {
+  test("database - environment variable", () => {
     process.env.MONGO_DB = "db-string";
-    const config = JSON.stringify({ mongodbDatabase: "$MONGO_DB" });
+    const config = JSON.stringify({ database: "$MONGO_DB" });
 
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
-      mongodbDatabase: "db-string",
+      database: "db-string",
     });
 
     delete process.env.MONGO_DB;

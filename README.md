@@ -41,8 +41,8 @@ The default configuration is:
 
 ```json
 {
-  "mongodbUri": "mongodb://localhost:27017",
-  "mongodbDatabase": "",
+  "uri": "mongodb://localhost:27017",
+  "database": "",
   "out": "src/__generated__",
   "bannerComment": [
     "/* eslint-disable */",
@@ -66,31 +66,30 @@ The default configuration is:
 ## Connecting to MongoDB
 
 The `bson2ts` CLI connects to the MongoDB server using the connection string
-provided by the `mongodbUri` configuration option, and the database name
-provided by the `mongodbDatabase` configuration option.
+provided by the `uri` configuration option, and the database name provided by
+the `database` configuration option.
 
 ## Environment variables
 
-If the `mongodbUri` or `mongodbDatabase` configuration options start with a `$`
-(dollar sign), they are treated as environment variables and will be expanded.
+If the `uri` or `database` configuration options start with a `$` (dollar sign),
+they are treated as environment variables and will be expanded.
 
 For example, consider this configuration:
 
 ```json
 {
-  "mongodbUri": "mongodb://localhost:27017",
-  "mongodbDatabase": "$MONGODB_DATABASE"
+  "uri": "mongodb://localhost:27017",
+  "database": "$MONGODB_DATABASE"
 }
 ```
 
-In this case `mongodbUri` will be used as-is (eg. `mongodb://localhost:27017`)
-but `mongodbDatabase` will be use the `MONGODB_DATABASE` environment variable of
-your system (eg. what ever `process.env.MONGODB_DATABASE` is set to).
+In this case `uri` will be used as-is (eg. `mongodb://localhost:27017`) but
+`database` will be use the `MONGODB_DATABASE` environment variable of your
+system (eg. what ever `process.env.MONGODB_DATABASE` is set to).
 
-In this case, `mongodbUri` will be used as-is (e.g.
-`mongodb://localhost:27017`), but `mongodbDatabase` will use the
-`MONGODB_DATABASE` environment variable of your system (e.g. whatever
-`process.env.MONGODB_DATABASE` is set to).
+In this case, `uri` will be used as-is (e.g. `mongodb://localhost:27017`), but
+`database` will use the `MONGODB_DATABASE` environment variable of your system
+(e.g. whatever `process.env.MONGODB_DATABASE` is set to).
 
 ## CLI usage
 

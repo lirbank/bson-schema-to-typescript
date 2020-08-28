@@ -12,8 +12,8 @@ export async function prettierOptions(path: string): Promise<prettier.Options> {
 }
 
 export type Options = {
-  mongodbUri: string;
-  mongodbDatabase: string;
+  uri: string;
+  database: string;
   out: string;
   bannerComment: string[];
   enableConstEnums: boolean;
@@ -23,8 +23,8 @@ export type Options = {
 };
 
 export const defaultOptions: Options = {
-  mongodbUri: "mongodb://localhost:27017",
-  mongodbDatabase: "",
+  uri: "mongodb://localhost:27017",
+  database: "",
   out: "src/__generated__",
   bannerComment: [
     "/* eslint-disable */",
@@ -92,19 +92,17 @@ export function parseConfig(config: string): Options {
     const out =
       typeof options.out === "string" ? options.out : defaultOptions.out;
 
-    const mongodbDatabase =
-      typeof options.mongodbDatabase === "string"
-        ? expandEnv(options.mongodbDatabase)
-        : defaultOptions.mongodbDatabase;
+    const database =
+      typeof options.database === "string"
+        ? expandEnv(options.database)
+        : defaultOptions.database;
 
-    const mongodbUri =
-      typeof options.mongodbUri === "string"
-        ? options.mongodbUri
-        : defaultOptions.mongodbUri;
+    const uri =
+      typeof options.uri === "string" ? options.uri : defaultOptions.uri;
 
     return {
-      mongodbDatabase,
-      mongodbUri,
+      database,
+      uri,
       out,
       bannerComment,
       enableConstEnums,
