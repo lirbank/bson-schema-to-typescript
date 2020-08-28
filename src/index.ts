@@ -1,2 +1,2 @@
 export { compileBSON } from "./compile";
-export { getCollectionSchema, getAllServerSchemas } from "./mongodb";
+export { getCollectionSchema, getDatabaseSchemas } from "./mongodb";

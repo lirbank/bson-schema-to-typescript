@@ -39,7 +39,7 @@ export async function getCollectionSchema(
 /**
  * Retrieves a list of JSON Schemas for each collection of the MongoDB server
  */
-export async function getAllServerSchemas(
+export async function getDatabaseSchemas(
   serverUri: string,
   dbName: string
 ): Promise<

@@ -127,9 +127,9 @@ describe("Modified options with wrong type", () => {
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 
-  // path
-  test("path as number returns default options", () => {
-    const config = JSON.stringify({ path: 1 });
+  // out
+  test("out as number returns default options", () => {
+    const config = JSON.stringify({ out: 1 });
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
 });
@@ -175,11 +175,11 @@ describe("Modified options", () => {
     });
   });
 
-  test("path", () => {
-    const config = JSON.stringify({ path: "newPath/" });
+  test("out", () => {
+    const config = JSON.stringify({ out: "newPath/" });
     expect(parseConfig(config)).toStrictEqual({
       ...defaultOptions,
-      path: "newPath/",
+      out: "newPath/",
     });
   });
 

@@ -14,7 +14,7 @@ export async function prettierOptions(path: string): Promise<prettier.Options> {
 export type Options = {
   mongodbUri: string;
   mongodbDatabase: string;
-  path: string;
+  out: string;
   bannerComment: string[];
   enableConstEnums: boolean;
   ignoreMinAndMaxItems: boolean;
@@ -25,7 +25,7 @@ export type Options = {
 export const defaultOptions: Options = {
   mongodbUri: "mongodb://localhost:27017",
   mongodbDatabase: "",
-  path: "src/__generated__",
+  out: "src/__generated__",
   bannerComment: [
     "/* eslint-disable */",
     "/* tslint:disable */",
@@ -89,8 +89,8 @@ export function parseConfig(config: string): Options {
         ? options.unknownAny
         : defaultOptions.unknownAny;
 
-    const path =
-      typeof options.path === "string" ? options.path : defaultOptions.path;
+    const out =
+      typeof options.out === "string" ? options.out : defaultOptions.out;
 
     const mongodbDatabase =
       typeof options.mongodbDatabase === "string"
@@ -105,7 +105,7 @@ export function parseConfig(config: string): Options {
     return {
       mongodbDatabase,
       mongodbUri,
-      path,
+      out,
       bannerComment,
       enableConstEnums,
       ignoreMinAndMaxItems,

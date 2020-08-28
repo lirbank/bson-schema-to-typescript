@@ -43,7 +43,7 @@ The default configuration is:
 {
   "mongodbUri": "mongodb://localhost:27017",
   "mongodbDatabase": "",
-  "path": "src/__generated__",
+  "out": "src/__generated__",
   "bannerComment": [
     "/* eslint-disable */",
     "/* tslint:disable */",
@@ -137,7 +137,7 @@ export function collections(db: Db) {
 import {
   compileBSON,
   getCollectionSchema,
-  getAllServerSchemas,
+  getDatabaseSchemas,
 } from "bson-schema-to-typescript";
 ```
 

@@ -2,7 +2,7 @@
 
 import fs from "fs";
 import path from "path";
-import { getAllServerSchemas } from "./mongodb";
+import { getDatabaseSchemas } from "./mongodb";
 import { compileBSON } from "./compile";
 import { loadConfig, prettierOptions } from "./options";
 
@@ -11,7 +11,7 @@ async function main(): Promise<void> {
   const opts = loadConfig();
 
   // Get schemas for all collections from the MongoDB server
-  const schemas = await getAllServerSchemas(
+  const schemas = await getDatabaseSchemas(
     opts.mongodbUri,
     opts.mongodbDatabase
   );
@@ -28,11 +28,11 @@ async function main(): Promise<void> {
       const filename = typeof schema.title === "string" ? schema.title : null;
       if (!filename) throw new Error("A schema title is required");
 
-      if (!fs.existsSync(opts.path)) {
-        fs.mkdirSync(opts.path, { recursive: true });
+      if (!fs.existsSync(opts.out)) {
+        fs.mkdirSync(opts.out, { recursive: true });
       }
 
-      const destination = path.join(opts.path, filename) + ".ts";
+      const destination = path.join(opts.out, filename) + ".ts";
 
       const output = await compileBSON(schema, {
         ...opts,
