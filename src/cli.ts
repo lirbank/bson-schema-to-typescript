@@ -6,24 +6,14 @@ import { getAllServerSchemas } from "./mongodb";
 import { compileBSON } from "./compile";
 import { loadConfig, prettierOptions } from "./options";
 
-function getEnv(name: string): string {
-  const env = process.env[name];
-
-  if (!env) {
-    throw new Error(`${name} environment variable not defined`);
-  }
-
-  return env;
-}
-
 async function main(): Promise<void> {
   // Load configuration file
   const opts = loadConfig();
 
   // Get schemas for all collections from the MongoDB server
   const schemas = await getAllServerSchemas(
-    getEnv(opts.env.MONGODB_URI),
-    getEnv(opts.env.MONGODB_DATABASE)
+    opts.mongodbUri,
+    opts.mongodbDatabase
   );
 
   console.log("Generating typescript types for MongoDB collection schemas");

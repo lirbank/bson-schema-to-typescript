@@ -24,6 +24,7 @@
     "typescript"
   ],
   "scripts": {
+    "pub": "yarn publish && git push && git push --tags",
     "prepublishOnly": "yarn build",
     "dev": "tsc --watch",
     "build": "tsc",
