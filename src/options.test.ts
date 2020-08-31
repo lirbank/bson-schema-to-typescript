@@ -1,140 +1,143 @@
 import { parseConfig, expandEnv, defaultOptions } from "./options";
 
-describe("Default options", () => {
-  /**
-   * JSON.stringify generated inputs
-   */
-
-  // Null
-  test("null returns default options", () => {
-    const config = JSON.stringify(null);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
-  // Undefined
-  test("undefined returns default options", () => {
-    const config = JSON.stringify(undefined);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
-  // Boolean
-  test("boolean returns default options", () => {
-    const config = JSON.stringify(false);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
-  test("boolean returns default options", () => {
-    const config = JSON.stringify(true);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
-  // Number
-  test("number returns default options (JSON)", () => {
-    const config = JSON.stringify(1);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
-  test("number returns default options (JSON)", () => {
-    const config = JSON.stringify(0);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
-  test("number returns default options (JSON)", () => {
-    const config = JSON.stringify(1.1);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
-  });
-
+describe("Config object", () => {
   // Object
   test("empty object returns default options", () => {
     const config = JSON.stringify({});
     expect(parseConfig(config)).toStrictEqual(defaultOptions);
   });
+});
 
-  // Array
-  test("empty array returns default options", () => {
-    const config = JSON.stringify([]);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+describe("Invalid config (not an object)", () => {
+  /**
+   * JSON.stringify generated inputs
+   */
+
+  // Null
+  test("null (JSON) throws", () => {
+    const config = JSON.stringify(null);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("array returns default options", () => {
+  // Undefined
+  test("undefined (JSON) throws", () => {
+    const config = JSON.stringify(undefined);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  // Boolean
+  test("boolean (JSON) throws", () => {
+    const config = JSON.stringify(false);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  test("boolean (JSON) throws", () => {
+    const config = JSON.stringify(true);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  // Number
+  test("number (JSON) throws", () => {
+    const config = JSON.stringify(1);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  test("number (JSON) throws", () => {
+    const config = JSON.stringify(0);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  test("number (JSON) throws", () => {
+    const config = JSON.stringify(1.1);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  // Array
+  test("empty array (JSON) throws", () => {
+    const config = JSON.stringify([]);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
+  });
+
+  test("array throws (JSON)", () => {
     const config = JSON.stringify(["1"]);
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   // String
-  test("empty string returns default options", () => {
+  test("empty string (JSON) throws", () => {
     const config = JSON.stringify("");
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("some string returns default options", () => {
+  test("string (JSON) throws", () => {
     const config = JSON.stringify("x");
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   /**
    * Plain string inputs
    */
-  test("empty string returns default options", () => {
+
+  test("empty string throws", () => {
     const config = "";
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("some string returns default options", () => {
+  test("string throws", () => {
     const config = "x";
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("some string returns default options", () => {
+  test("string throws", () => {
     const config = "undefined";
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 });
 
 describe("Modified options with wrong type", () => {
   // out
-  test("out as number returns default options", () => {
-    const config = JSON.stringify({ out: 1 });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+  test("out as number throws", () => {
+    const config = JSON.stringify({ out: 1, enableConstEnums: 1 });
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   // bannerComment
-  test("bannerComment as boolean returns default options", () => {
+  test("bannerComment as boolean throws", () => {
     const config = JSON.stringify({ bannerComment: true });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("bannerComment as array of non-strings returns default options", () => {
+  test("bannerComment as array of non-strings throws", () => {
     const config = JSON.stringify({ bannerComment: [false] });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   // enableConstEnums
-  test("enableConstEnums as string returns default options", () => {
+  test("enableConstEnums as string throws", () => {
     const config = JSON.stringify({ enableConstEnums: "some string" });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   // ignoreMinAndMaxItems
-  test("ignoreMinAndMaxItems as object returns default options", () => {
+  test("ignoreMinAndMaxItems as object throws", () => {
     const config = JSON.stringify({ ignoreMinAndMaxItems: { x: 1 } });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   // strictIndexSignatures
-  test("strictIndexSignatures as null returns default options", () => {
+  test("strictIndexSignatures as null throws", () => {
     const config = JSON.stringify({ strictIndexSignatures: null });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
   // unknownAny
-  test("unknownAny as array returns default options", () => {
+  test("unknownAny as array throws", () => {
     const config = JSON.stringify({ unknownAny: ["1"] });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 });
 
-describe("Modified options", () => {
+describe("Modified options with correct type", () => {
   // uri
   test("uri - string", () => {
     const config = JSON.stringify({ uri: "connection-string" });
@@ -232,49 +235,40 @@ describe("Modified options", () => {
   });
 });
 
-describe("Omit excess and invalid options", () => {
-  test("excess option is skipped", () => {
+describe("Throw on excess and invalid options", () => {
+  test("excess option throws", () => {
     const config = JSON.stringify({ excessOption: false });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("invalid option is skipped", () => {
+  test("invalid option throws", () => {
     const config = JSON.stringify({ unknownAny: "should be boolean" });
-    expect(parseConfig(config)).toStrictEqual(defaultOptions);
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("excess option is skipped and valid option is in effect", () => {
+  test("excess option and valid option throws", () => {
     const config = JSON.stringify({
       enableConstEnums: false,
       excessOption: false,
     });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      enableConstEnums: false,
-    });
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("invalid option is skipped and valid option is in effect", () => {
+  test("invalid option and valid option throws", () => {
     const config = JSON.stringify({
       enableConstEnums: false,
       unknownAny: "should be boolean",
     });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      enableConstEnums: false,
-    });
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 
-  test("excess option is skipped, invalid option is skipped, and valid option is in effect", () => {
+  test("excess option, invalid option, and valid option throws", () => {
     const config = JSON.stringify({
       enableConstEnums: false,
       excessOption: false,
       ignoreMinAndMaxItems: "xxx",
     });
-    expect(parseConfig(config)).toStrictEqual({
-      ...defaultOptions,
-      enableConstEnums: false,
-    });
+    expect(() => parseConfig(config)).toThrow("Invalid configuration");
   });
 });
 

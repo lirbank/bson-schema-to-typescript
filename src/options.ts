@@ -1,6 +1,6 @@
 import fs from "fs";
 import prettier from "prettier";
-import { JsonValue } from "./types";
+import * as t from "io-ts";
 
 export async function prettierOptions(path: string): Promise<prettier.Options> {
   const options = await prettier.resolveConfig(path);
@@ -11,16 +11,18 @@ export async function prettierOptions(path: string): Promise<prettier.Options> {
   };
 }
 
-export type Options = {
-  uri: string;
-  database: string;
-  out: string;
-  bannerComment: string[];
-  enableConstEnums: boolean;
-  ignoreMinAndMaxItems: boolean;
-  strictIndexSignatures: boolean;
-  unknownAny: boolean;
-};
+const PartialOptions = t.type({
+  uri: t.string,
+  database: t.string,
+  out: t.string,
+  bannerComment: t.array(t.string),
+  enableConstEnums: t.boolean,
+  ignoreMinAndMaxItems: t.boolean,
+  strictIndexSignatures: t.boolean,
+  unknownAny: t.boolean,
+});
+
+export type Options = t.TypeOf<typeof PartialOptions>;
 
 export const defaultOptions: Options = {
   uri: "mongodb://localhost:27017",
@@ -54,67 +56,38 @@ function readConfig() {
 
 export function parseConfig(config: string): Options {
   try {
-    const options = JSON.parse(config) as JsonValue;
-
-    if (
-      typeof options !== "object" ||
-      options === null ||
-      Array.isArray(options)
-    ) {
-      throw new Error("config must be a plain object");
-    }
-
-    const uri =
-      typeof options.uri === "string"
-        ? expandEnv(options.uri)
-        : defaultOptions.uri;
-
-    const database =
-      typeof options.database === "string"
-        ? expandEnv(options.database)
-        : defaultOptions.database;
-
-    const out =
-      typeof options.out === "string" ? options.out : defaultOptions.out;
-
-    const bannerComment = (Array.isArray(options.bannerComment) &&
-    options.bannerComment.every((e) => typeof e === "string")
-      ? options.bannerComment
-      : defaultOptions.bannerComment) as string[];
-
-    const enableConstEnums =
-      typeof options.enableConstEnums === "boolean"
-        ? options.enableConstEnums
-        : defaultOptions.enableConstEnums;
-
-    const ignoreMinAndMaxItems =
-      typeof options.ignoreMinAndMaxItems === "boolean"
-        ? options.ignoreMinAndMaxItems
-        : defaultOptions.ignoreMinAndMaxItems;
-
-    const strictIndexSignatures =
-      typeof options.strictIndexSignatures === "boolean"
-        ? options.strictIndexSignatures
-        : defaultOptions.strictIndexSignatures;
-
-    const unknownAny =
-      typeof options.unknownAny === "boolean"
-        ? options.unknownAny
-        : defaultOptions.unknownAny;
-
-    return {
-      uri,
-      database,
-      out,
-      bannerComment,
-      enableConstEnums,
-      ignoreMinAndMaxItems,
-      strictIndexSignatures,
-      unknownAny,
-    };
+    JSON.parse(config);
   } catch (error) {
-    return defaultOptions;
+    throw new Error(`Invalid configuration`);
   }
+
+  const options = JSON.parse(config) as unknown;
+
+  if (
+    typeof options !== "object" ||
+    options === null ||
+    Array.isArray(options)
+  ) {
+    throw new Error(`Invalid configuration`);
+  }
+
+  const mergedOptions: Options = { ...defaultOptions, ...options };
+
+  if (!PartialOptions.is(mergedOptions)) {
+    throw new Error(`Invalid configuration`);
+  }
+
+  Object.keys(mergedOptions).forEach((key) => {
+    if (!Reflect.has(defaultOptions, key)) {
+      throw new Error(`Invalid configuration`);
+    }
+  });
+
+  return {
+    ...mergedOptions,
+    uri: expandEnv(mergedOptions.uri),
+    database: expandEnv(mergedOptions.database),
+  };
 }
 
 export function loadConfig(): Options {
