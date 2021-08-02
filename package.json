@@ -38,7 +38,7 @@
     "lint:fix": "eslint . --ext .js,.ts,.tsx --fix"
   },
   "dependencies": {
-    "@types/mongodb": "^3.5.25",
+    "@types/mongodb": "^4.0.7",
     "@types/prettier": "^2.0.2",
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",
