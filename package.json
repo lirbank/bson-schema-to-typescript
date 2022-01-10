@@ -43,7 +43,7 @@
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",
     "json-schema-to-typescript": "^9.1.1",
-    "mongodb": "^3.5.9",
+    "mongodb": "^4.3.0",
     "prettier": "^2.0.5"
   },
   "devDependencies": {
