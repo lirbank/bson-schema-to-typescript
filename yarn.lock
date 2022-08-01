@@ -2846,9 +2846,9 @@ invariant@^2.2.2, invariant@^2.2.4:
     loose-envify "^1.0.0"
 
 io-ts@^2.2.10:
-  version "2.2.10"
-  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.10.tgz#447d02df51717464a90712b146ec8dbc21b4a74b"
-  integrity sha512-WHx5jJe7hPpc6JoSIVbD+Xn6tYqe3cRvNpX24d8Wi15/kxhRWa8apo0Gzag6Xg99sCNY9OHKylw/Vhv0JAbNPQ==
+  version "2.2.17"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.17.tgz#19531c9d49abcebc935d85d282e1db95adb01901"
+  integrity sha512-RkQY06h6rRyADVEI46OCAUYTP2p18Vdtz9Movi19Mmj7SJ1NhN/yGyW7CxlcBVxh95WKg2YSbTmcUPqqeLuhXw==
 
 ip-regex@^2.1.0:
   version "2.1.0"
