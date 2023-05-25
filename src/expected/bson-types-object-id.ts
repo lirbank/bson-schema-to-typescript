@@ -7,38 +7,11 @@
  * Do not modify it by hand. Instead, modify the MongoDB $jsonSchema validator,
  * and run bson2ts to regenerate this file.
  */
-import { Decimal128 } from "mongodb";
+import { ObjectId } from "mongodb";
 
 /**
  * User object
  */
 export interface UserDoc {
-  /**
-   * String
-   */
-  string?: string;
-  /**
-   * Number
-   */
-  number?: number;
-  /**
-   * Double
-   */
-  double?: number;
-  /**
-   * Boolean
-   */
-  boolean?: boolean;
-  /**
-   * Null
-   */
-  null?: null;
-  /**
-   * Date
-   */
-  date?: Date;
-  /**
-   * Decimal
-   */
-  decimal?: Decimal128;
+  _id?: ObjectId;
 }

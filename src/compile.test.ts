@@ -140,6 +140,10 @@ describe("compileBSON", () => {
           description: "Number",
           bsonType: "number",
         },
+        double: {
+          description: "Double",
+          bsonType: "double",
+        },
         boolean: {
           description: "Boolean",
           bsonType: "bool",
@@ -203,6 +207,65 @@ describe("compileBSON", () => {
     expect(await compileBSON(schema)).toBe(
       getExpected("bson-types-with-imports-2")
     );
+  });
+
+  test(`BSON types ObjectId`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: [],
+      properties: {
+        _id: {
+          bsonType: "objectId",
+        },
+      },
+    };
+
+    expect(await compileBSON(schema)).toBe(getExpected("bson-types-object-id"));
+  });
+
+  test(`BSON types geo-json`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: [],
+      properties: {
+        // https://www.leighhalliday.com/mongodb-geojson-schema-validation
+        location: {
+          bsonType: "object",
+          required: ["type", "coordinates"],
+          properties: {
+            type: {
+              bsonType: "string",
+              enum: ["Point"],
+            },
+            coordinates: {
+              bsonType: ["array"],
+              minItems: 2,
+              maxItems: 2,
+              items: [
+                {
+                  bsonType: "double",
+                  minimum: -180,
+                  maximum: 180,
+                },
+                {
+                  bsonType: "double",
+                  minimum: -90,
+                  maximum: 90,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    expect(await compileBSON(schema)).toBe(getExpected("bson-types-geo-json"));
   });
 });
 
