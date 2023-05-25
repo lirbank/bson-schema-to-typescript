@@ -149,12 +149,13 @@ export async function compileBSON(
   const baseBanner = options?.bannerComment || defaultOptions.bannerComment;
 
   // Import Decimal128 if the type annotations use it
-  let comments = baseBanner;
+  let comments = [...baseBanner];
   if (hasType(schema, "decimal")) {
-    comments.push(`import { Decimal128 } from "mongodb";`);
+    comments.push('import { Decimal128 } from "mongodb";');
   }
+  // Import ObjectId if the type annotations use it
   if (hasType(schema, "objectId")) {
-    comments.push(`import { ObjectId } from "mongodb";`);
+    comments.push('import { ObjectId } from "mongodb";');
   }
   const bannerComment = comments.join("\n");
 
