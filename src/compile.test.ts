@@ -204,6 +204,23 @@ describe("compileBSON", () => {
       getExpected("bson-types-with-imports-2")
     );
   });
+
+  test(`BSON types ObjectId`, async () => {
+    const schema = {
+      title: "UserDoc",
+      description: "User object",
+      bsonType: "object",
+      additionalProperties: false,
+      required: [],
+      properties: {
+        _id: {
+          bsonType: "objectId",
+        },
+      },
+    };
+
+    expect(await compileBSON(schema)).toBe(getExpected("bson-types-object-id"));
+  });
 });
 
 describe("compileBSON with banner comments", () => {

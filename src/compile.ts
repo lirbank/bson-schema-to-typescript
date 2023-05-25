@@ -32,7 +32,7 @@ function format(text: string, options?: prettier.Options): string {
  * [ ] array
  * [ ] binData
  * [ ] undefined  -- Deprecated
- * [ ] objectId
+ * [x] objectId
  * [X] bool
  * [X] date
  * [X] null
@@ -58,6 +58,7 @@ const bsonToTs = new Map([
   ["null", "null"],
   ["int", "number"],
   ["decimal", "Decimal128"],
+  ["objectId", "ObjectId"],
 ]);
 
 /**
@@ -111,22 +112,22 @@ function setTsType(schema: JsonValue): JsonValue {
 /**
  * Recursively checks if a schema relies on the Decimal128 BSON type anywhere
  */
-function hasDecimal128(schema: JsonValue): boolean {
+function hasType(schema: JsonValue, typeName: string): boolean {
   if (schema === null || typeof schema !== "object") {
     return false;
   }
 
   if (Array.isArray(schema)) {
-    return schema.some(hasDecimal128);
+    return schema.some((schema) => hasType(schema, typeName));
   }
 
   return Object.entries(schema).some(([key, value]) => {
     if (key === "bsonType") {
-      if (value === "decimal") return true;
-      if (Array.isArray(value)) return value.includes("decimal");
+      if (value === typeName) return true;
+      if (Array.isArray(value)) return value.includes(typeName);
     }
 
-    if (typeof value === "object") return hasDecimal128(value);
+    if (typeof value === "object") return hasType(value, typeName);
 
     return false;
   });
@@ -148,10 +149,14 @@ export async function compileBSON(
   const baseBanner = options?.bannerComment || defaultOptions.bannerComment;
 
   // Import Decimal128 if the type annotations use it
-  const bannerComment = (hasDecimal128(schema)
-    ? [...baseBanner, `import { Decimal128 } from "mongodb";`]
-    : baseBanner
-  ).join("\n");
+  let comments = baseBanner;
+  if (hasType(schema, "decimal")) {
+    comments.push(`import { Decimal128 } from "mongodb";`);
+  }
+  if (hasType(schema, "objectId")) {
+    comments.push(`import { ObjectId } from "mongodb";`);
+  }
+  const bannerComment = comments.join("\n");
 
   const compileJSONOptions: Partial<CompileJSONOptions> = {
     bannerComment,
