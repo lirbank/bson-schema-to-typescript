@@ -26,7 +26,7 @@ function format(text: string, options?: prettier.Options): string {
  * https://docs.mongodb.com/manual/reference/operator/query/type/#document-type-available-types
  *
  * [X] number
- * [ ] double
+ * [x] double
  * [X] string
  * [ ] object
  * [ ] array
@@ -55,6 +55,7 @@ const bsonToTs = new Map([
   ["string", "string"],
   ["bool", "boolean"],
   ["date", "Date"],
+  ["double", "number"],
   ["null", "null"],
   ["int", "number"],
   ["decimal", "Decimal128"],
